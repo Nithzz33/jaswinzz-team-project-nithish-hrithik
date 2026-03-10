@@ -43,7 +43,7 @@ export default function PaymentButton({ amount, customerName, onSuccess }: Props
           try {
 
             const verify = await axios.post(
-              "http://127.0.0.1:8000/verify-payment",
+              "https://asset-harmony-api.onrender.com/verify-payment",
               response
             );
 
