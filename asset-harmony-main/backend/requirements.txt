@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-dotenv
+supabase
+postgrest
+pydantic
+razorpay
+bcrypt
+python-jose 
