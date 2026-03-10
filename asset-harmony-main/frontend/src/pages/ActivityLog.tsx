@@ -43,7 +43,7 @@ const ActivityLog = () => {
   const { data: logs, isLoading } = useQuery({
     queryKey: ["activity_logs"],
     queryFn: async () => {
-      const res = await fetch("http://127.0.0.1:8000/activity-logs");
+      const res = await fetch("https://asset-harmony-api.onrender.com/api/activity-logs");
 
       if (!res.ok) {
         throw new Error("Failed to fetch activity logs");

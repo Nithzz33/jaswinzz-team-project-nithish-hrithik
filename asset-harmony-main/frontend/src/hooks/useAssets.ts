@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
-const API = "http://127.0.0.1:8000";
+const API = "https://asset-harmony-api.onrender.com";
 
 export function useProducts() {
   const [products, setProducts] = useState([]);
@@ -89,7 +89,7 @@ export const useDeleteAssets = () => {
 
   return useMutation({
     mutationFn: async (ids: string[]) => {
-      const res = await fetch("http://127.0.0.1:8000/assets/delete-bulk", {
+      const res = await fetch(`${API}/assets/delete-bulk`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
