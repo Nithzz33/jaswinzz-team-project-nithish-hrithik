@@ -34,12 +34,13 @@ razorpay_client = razorpay.Client(
 
 app = FastAPI(title="OFFICE INVENTORY MANAGEMENT API")
 origins = [
+    "https://jaswinzz-team-project-nithish-hrithik-qg3il6ncx.vercel.app",
     "https://jaswinzz-team-project-nithish-hrithik-qg3il6ncx.vercel.app"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://jaswinzz-team-project-nithish-hrithik-qg3il6ncx.vercel.app"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
