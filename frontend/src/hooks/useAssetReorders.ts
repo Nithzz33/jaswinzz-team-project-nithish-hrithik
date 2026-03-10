@@ -14,7 +14,7 @@ export interface AssetReorderRequest {
   updated_at: string;
 }
 
-const API = "https://asset-harmony-api.onrender.com/api";
+const API = "https://asset-harmony-api.onrender.com";
 
 
 // -----------------------------

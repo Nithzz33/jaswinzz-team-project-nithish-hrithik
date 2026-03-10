@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API = "https://asset-harmony-api.onrender.com/api";
+const API = "https://asset-harmony-api.onrender.com";
 
 /* ---------------- PRODUCTS ---------------- */
 
