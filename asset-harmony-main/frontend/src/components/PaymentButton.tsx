@@ -26,7 +26,7 @@ export default function PaymentButton({ amount, customerName, onSuccess }: Props
       console.log("Creating order for amount:", amount);
 
       const order = await axios.post(
-        "http://127.0.0.1:8000/create-order",
+        "https://asset-harmony-api.onrender.com/create-order",
         { amount: Math.round(amount) }
       );
 
