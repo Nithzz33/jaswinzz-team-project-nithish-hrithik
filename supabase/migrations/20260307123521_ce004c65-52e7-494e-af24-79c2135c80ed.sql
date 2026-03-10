@@ -1,0 +1,1 @@
+ALTER TABLE public.assets ADD COLUMN unit_cost NUMERIC NOT NULL DEFAULT 0;

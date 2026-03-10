@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ── Surface system ── */
+    --background: 220 14% 96%;
+    --foreground: 215 28% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 28% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 28% 10%;
+
+    /* ── Brand accent: cobalt ── */
+    --primary: 215 72% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    /* ── Secondary: teal ── */
+    --secondary: 174 52% 40%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* ── Neutral tones ── */
+    --muted: 218 14% 92%;
+    --muted-foreground: 215 12% 48%;
+
+    --accent: 215 72% 44%;
+    --accent-foreground: 0 0% 100%;
+
+    /* ── Semantic status ── */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 160 60% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 36 92% 50%;
+    --warning-foreground: 30 80% 10%;
+
+    --info: 210 68% 50%;
+    --info-foreground: 0 0% 100%;
+
+    /* ── Borders & inputs ── */
+    --border: 216 12% 88%;
+    --input: 216 12% 88%;
+    --ring: 215 72% 44%;
+
+    --radius: 0.625rem;
+
+    /* ── Sidebar: dark steel ── */
+    --sidebar-background: 218 30% 10%;
+    --sidebar-foreground: 216 14% 78%;
+    --sidebar-primary: 174 52% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 218 24% 16%;
+    --sidebar-accent-foreground: 216 14% 94%;
+    --sidebar-border: 218 20% 16%;
+    --sidebar-ring: 174 52% 50%;
+
+    /* ── Extended surface tokens ── */
+    --surface: 0 0% 100%;
+    --surface-raised: 220 14% 98%;
+    --surface-muted: 218 14% 95%;
+
+    /* ── Chart palette ── */
+    --chart-1: 215 72% 44%;
+    --chart-2: 174 52% 40%;
+    --chart-3: 36 92% 50%;
+    --chart-4: 0 72% 51%;
+    --chart-5: 280 52% 48%;
+    --chart-6: 200 70% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ── Typography scale ── */
+@layer components {
+  .text-display {
+    @apply text-2xl font-extrabold tracking-tight sm:text-3xl;
+    font-family: 'Manrope', sans-serif;
+  }
+  .text-headline {
+    @apply text-lg font-bold tracking-tight sm:text-xl;
+    font-family: 'Manrope', sans-serif;
+  }
+  .text-title {
+    @apply text-sm font-semibold tracking-tight;
+  }
+  .text-body {
+    @apply text-sm leading-relaxed;
+  }
+  .text-caption {
+    @apply text-xs text-muted-foreground;
+  }
+  .text-mono {
+    @apply text-xs;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .text-metric {
+    @apply text-2xl font-extrabold tracking-tight tabular-nums;
+    font-family: 'Manrope', sans-serif;
+  }
+}
+
+/* ── Layout primitives ── */
+@layer components {
+  .page-shell {
+    @apply space-y-6;
+  }
+  .page-header {
+    @apply flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between;
+  }
+  .page-title {
+    @apply text-headline flex items-center gap-2;
+  }
+  .page-subtitle {
+    @apply text-caption mt-0.5;
+  }
+  .section-card {
+    @apply rounded-xl border bg-card p-5 shadow-sm;
+  }
+  .section-title {
+    @apply text-title flex items-center gap-1.5;
+  }
+  .stat-card {
+    @apply rounded-xl border bg-card p-4 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+  }
+  .data-table-wrapper {
+    @apply rounded-xl border bg-card shadow-sm overflow-hidden;
+  }
+  .filter-bar {
+    @apply flex flex-wrap items-center gap-2;
+  }
+}
+
+/* ── Table enhancements ── */
+@layer utilities {
+  .table-sticky-header thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: hsl(var(--card));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  .table-sticky-header thead th {
+    @apply text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+  .table-zebra tbody tr:nth-child(even) {
+    background: hsl(var(--muted) / 0.25);
+  }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.15);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.28);
+}
+
+/* ── Focus ── */
+:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Gradient utility for hero sections ── */
+@layer utilities {
+  .gradient-mesh {
+    background: 
+      radial-gradient(ellipse at 20% 50%, hsl(var(--primary) / 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, hsl(var(--secondary) / 0.04) 0%, transparent 60%),
+      hsl(var(--background));
+  }
+}
