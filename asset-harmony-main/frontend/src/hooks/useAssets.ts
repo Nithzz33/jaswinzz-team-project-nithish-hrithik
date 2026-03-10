@@ -78,7 +78,7 @@ export const useAuditLogs = () => {
   return useQuery({
     queryKey: ["audit_logs"],
     queryFn: async () => {
-      const res = await fetch(`${API}/audit_logs`);
+      const res = await fetch(`${API}/audit-logs`);
       if (!res.ok) throw new Error("Failed to fetch audit logs");
       return res.json();
     },
