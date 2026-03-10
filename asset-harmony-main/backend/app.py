@@ -31,10 +31,12 @@ razorpay_client = razorpay.Client(
 # -------------------------------
 # FASTAPI APP
 # -------------------------------
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="OFFICE INVENTORY MANAGEMENT API")
+
 origins = [
-    "https://jaswinzz-team-project-nithish-hrithik-qg3il6ncx.vercel.app",
+    "https://jaswinzz-team-project-nithish-hrith.vercel.app",
     "https://jaswinzz-team-project-nithish-hrithik-qg3il6ncx.vercel.app"
 ]
 
@@ -45,7 +47,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # -------------------------------
 # ROOT / HEALTH CHECK
 # -------------------------------
@@ -177,34 +178,40 @@ def get_sales():
 
 
 @app.post("/sales")
-def create_sale(sale: dict):
+async def create_sale(data: dict):
 
-    product_id = sale["product_id"]
-    quantity = sale["quantity"]
+    quantity = int(data["quantity"])
+    unit_price = float(data["unitPrice"])
 
-    product = supabase.table("products") \
-        .select("quantity") \
-        .eq("id", product_id) \
-        .single() \
+    sale = {
+        "product_id": data["productId"],
+        "quantity": quantity,
+        "unit_price": unit_price,
+        "total_price": quantity * unit_price,
+        "sold_by": data.get("soldBy"),
+        "customer_name": data.get("customerName"),
+        "notes": data.get("notes")
+    }
+
+    # insert sale
+    supabase.table("sales").insert(sale).execute()
+
+    # update product quantity
+    product = supabase.table("products")\
+        .select("quantity")\
+        .eq("id", data["productId"])\
+        .single()\
         .execute()
 
-    if not product.data:
-        raise HTTPException(status_code=404, detail="Product not found")
+    new_quantity = product.data["quantity"] - quantity
 
-    if product.data["quantity"] < quantity:
-        raise HTTPException(status_code=400, detail="Insufficient stock")
-
-    # deduct stock
-    new_qty = product.data["quantity"] - quantity
-
-    supabase.table("products") \
-        .update({"quantity": new_qty}) \
-        .eq("id", product_id) \
+    supabase.table("products")\
+        .update({"quantity": new_quantity})\
+        .eq("id", data["productId"])\
         .execute()
 
-    res = supabase.table("sales").insert(sale).execute()
+    return {"status": "success"}
 
-    return res.data
 
 
 # -------------------------------
@@ -338,40 +345,6 @@ async def verify_payment(data: dict):
 
         return {"status": "failed"}
 
-@app.post("/sales")
-async def create_sale(data: dict):
-
-    quantity = int(data["quantity"])
-    unit_price = float(data["unitPrice"])
-
-    sale = {
-        "product_id": data["productId"],
-        "quantity": quantity,
-        "unit_price": unit_price,
-        "total_price": quantity * unit_price,
-        "sold_by": data.get("soldBy"),
-        "customer_name": data.get("customerName"),
-        "notes": data.get("notes")
-    }
-
-    # insert sale
-    supabase.table("sales").insert(sale).execute()
-
-    # update product quantity
-    product = supabase.table("products")\
-        .select("quantity")\
-        .eq("id", data["productId"])\
-        .single()\
-        .execute()
-
-    new_quantity = product.data["quantity"] - quantity
-
-    supabase.table("products")\
-        .update({"quantity": new_quantity})\
-        .eq("id", data["productId"])\
-        .execute()
-
-    return {"status": "success"}
 
 @app.post("/products/delete-bulk")
 def delete_products(data: dict):

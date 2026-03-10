@@ -2,6 +2,19 @@ import { useEffect, useState } from "react";
 
 const API = "https://asset-harmony-api.onrender.com";
 
+/* ---------------- API HELPER ---------------- */
+
+async function apiFetch(url: string, options?: RequestInit) {
+  const res = await fetch(url, options);
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "API request failed");
+  }
+
+  return res.json();
+}
+
 /* ---------------- PRODUCTS ---------------- */
 
 export function useProducts() {
@@ -10,11 +23,11 @@ export function useProducts() {
 
   const loadProducts = async () => {
     try {
-      const res = await fetch(`${API}/products`);
-      const data = await res.json();
+      const data = await apiFetch(`${API}/products`);
       setProducts(data);
     } catch (err) {
-      console.error(err);
+      console.error("Products API error:", err);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -29,13 +42,13 @@ export function useProducts() {
 
 export function useAddProduct() {
   const mutateAsync = async (product: any) => {
-    const res = await fetch(`${API}/products`, {
+    return apiFetch(`${API}/products`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(product),
     });
-
-    return res.json();
   };
 
   return { mutateAsync, isPending: false };
@@ -43,11 +56,9 @@ export function useAddProduct() {
 
 export function useDeleteProduct() {
   const mutateAsync = async (productId: string) => {
-    const res = await fetch(`${API}/products/${productId}`, {
+    return apiFetch(`${API}/products/${productId}`, {
       method: "DELETE",
     });
-
-    return res.json();
   };
 
   return { mutateAsync, isPending: false };
@@ -61,11 +72,11 @@ export function useSales() {
 
   const loadSales = async () => {
     try {
-      const res = await fetch(`${API}/sales`);
-      const data = await res.json();
+      const data = await apiFetch(`${API}/sales`);
       setSales(data);
     } catch (err) {
-      console.error(err);
+      console.error("Sales API error:", err);
+      setSales([]);
     } finally {
       setLoading(false);
     }
@@ -78,7 +89,10 @@ export function useSales() {
   return { data: sales, isLoading, reload: loadSales };
 }
 
-export function useRecordSale(reloadSales?: () => void, reloadProducts?: () => void) {
+export function useRecordSale(
+  reloadSales?: () => void,
+  reloadProducts?: () => void
+) {
   const mutateAsync = async ({
     productId,
     quantity,
@@ -94,8 +108,7 @@ export function useRecordSale(reloadSales?: () => void, reloadProducts?: () => v
     notes?: string;
     soldBy: string;
   }) => {
-
-    const res = await fetch(`${API}/sales`, {
+    const data = await apiFetch(`${API}/sales`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,9 +124,6 @@ export function useRecordSale(reloadSales?: () => void, reloadProducts?: () => v
       }),
     });
 
-    const data = await res.json();
-
-    // 🔄 reload data after sale
     reloadSales?.();
     reloadProducts?.();
 
@@ -129,8 +139,7 @@ export function useLowStockProducts() {
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(`${API}/products`)
-      .then((res) => res.json())
+    apiFetch(`${API}/products`)
       .then((data) => {
         const lowStock = data.filter(
           (p: any) => p.quantity <= p.reorder_point
@@ -151,11 +160,11 @@ export function useReorderRequests() {
 
   const loadRequests = async () => {
     try {
-      const res = await fetch(`${API}/reorders`);
-      const data = await res.json();
+      const data = await apiFetch(`${API}/reorders`);
       setRequests(data);
     } catch (err) {
-      console.error(err);
+      console.error("Reorders API error:", err);
+      setRequests([]);
     } finally {
       setLoading(false);
     }
@@ -170,16 +179,39 @@ export function useReorderRequests() {
 
 export function useCreateReorderRequest() {
   const mutateAsync = async (req: any) => {
-    const res = await fetch(`${API}/reorders`, {
+    return apiFetch(`${API}/reorders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(req),
     });
-
-    return res.json();
   };
 
   return { mutateAsync, isPending: false };
+}
+
+/* ---------------- AUDIT LOGS ---------------- */
+
+export function useAuditLogs() {
+  const [logs, setLogs] = useState<any[]>([]);
+  const [isLoading, setLoading] = useState(true);
+
+  const loadLogs = async () => {
+    try {
+      const data = await apiFetch(`${API}/audit-logs`);
+      setLogs(data);
+    } catch (err) {
+      console.error("Audit logs API error:", err);
+      setLogs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadLogs();
+  }, []);
+
+  return { data: logs, isLoading, reload: loadLogs };
 }
